@@ -1,11 +1,20 @@
 import useRegister from "@/hooks/useRegister";
-import { Button, Card, CardBody, Input } from "@heroui/react";
+import { Button, Card, CardBody, Input, Spinner } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
+import { Controller } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
-  const { visiblePassword, togglePasswordVisibility } = useRegister();
+  const {
+    visiblePassword,
+    togglePasswordVisibility,
+    control,
+    handleRegister,
+    handleSubmit,
+    isRegistering,
+    errors,
+  } = useRegister();
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-10 lg:flex-row lg:gap-20">
@@ -15,6 +24,7 @@ const Register = () => {
           alt="Register"
           width={180}
           height={180}
+          style={{ width: "50%", height: "auto" }}
         />
         <Image
           src="/illustration/login.svg"
@@ -22,6 +32,7 @@ const Register = () => {
           width={180}
           height={180}
           className="w-2/3 lg:w-full"
+          priority
         />
       </div>
       <Card>
@@ -33,75 +44,140 @@ const Register = () => {
               Login here
             </Link>
           </p>
-          <form className="flex w-80 flex-col gap-4 pt-4">
-            <Input
-              isClearable
-              type="text"
-              label="Full Name"
-              variant="bordered"
-              autoComplete="off"
+          <form
+            onSubmit={handleSubmit(handleRegister)}
+            className="flex w-80 flex-col gap-4 pt-4"
+          >
+            <Controller
+              control={control}
+              name="fullName"
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  isClearable
+                  type="text"
+                  label="Full Name"
+                  variant="bordered"
+                  autoComplete="off"
+                  isInvalid={!!errors.fullName?.message}
+                  errorMessage={errors.fullName?.message}
+                />
+              )}
             />
-            <Input
-              isClearable
-              type="text"
-              label="Username"
-              variant="bordered"
-              autoComplete="off"
+            <Controller
+              control={control}
+              name="username"
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  isClearable
+                  type="text"
+                  label="Username"
+                  variant="bordered"
+                  autoComplete="off"
+                  isInvalid={!!errors.username?.message}
+                  errorMessage={errors.username?.message}
+                />
+              )}
             />
-            <Input
-              isClearable
-              type="tel"
-              label="Phone Number"
-              variant="bordered"
-              autoComplete="off"
+            <Controller
+              control={control}
+              name="phoneNumber"
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  isClearable
+                  type="tel"
+                  label="Phone Number"
+                  variant="bordered"
+                  autoComplete="off"
+                  isInvalid={!!errors.phoneNumber?.message}
+                  errorMessage={errors.phoneNumber?.message}
+                />
+              )}
             />
-            <Input
-              isClearable
-              type="email"
-              label="Email"
-              variant="bordered"
-              autoComplete="off"
+            <Controller
+              control={control}
+              name="email"
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  isClearable
+                  type="email"
+                  label="Email"
+                  variant="bordered"
+                  autoComplete="off"
+                  isInvalid={!!errors.email?.message}
+                  errorMessage={errors.email?.message}
+                />
+              )}
             />
-            <Input
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="cursor-pointer outline-transparent focus:outline-solid"
-                  type="button"
-                  onClick={() => togglePasswordVisibility("password")}
-                >
-                  {visiblePassword.password ? (
-                    <FaEye className="text-default-400 pointer-events-none text-xl" />
-                  ) : (
-                    <FaEyeSlash className="text-default-400 pointer-events-none text-xl" />
-                  )}
-                </button>
-              }
-              label="Password"
-              type={visiblePassword.password ? "text" : "password"}
-              variant="bordered"
+            <Controller
+              control={control}
+              name="password"
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="cursor-pointer outline-transparent focus:outline-solid"
+                      type="button"
+                      onClick={() => togglePasswordVisibility("password")}
+                    >
+                      {visiblePassword.password ? (
+                        <FaEye className="text-default-400 pointer-events-none text-xl" />
+                      ) : (
+                        <FaEyeSlash className="text-default-400 pointer-events-none text-xl" />
+                      )}
+                    </button>
+                  }
+                  label="Password"
+                  type={visiblePassword.password ? "text" : "password"}
+                  variant="bordered"
+                  isInvalid={!!errors.password?.message}
+                  errorMessage={errors.password?.message}
+                />
+              )}
             />
-            <Input
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="cursor-pointer outline-transparent focus:outline-solid"
-                  type="button"
-                  onClick={() => togglePasswordVisibility("confirmPassword")}
-                >
-                  {visiblePassword.confirmPassword ? (
-                    <FaEye className="text-default-400 pointer-events-none text-xl" />
-                  ) : (
-                    <FaEyeSlash className="text-default-400 pointer-events-none text-xl" />
-                  )}
-                </button>
-              }
-              label="Confirm Password"
-              type={visiblePassword.confirmPassword ? "text" : "password"}
-              variant="bordered"
+            <Controller
+              control={control}
+              name="confirmPassword"
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="cursor-pointer outline-transparent focus:outline-solid"
+                      type="button"
+                      onClick={() =>
+                        togglePasswordVisibility("confirmPassword")
+                      }
+                    >
+                      {visiblePassword.confirmPassword ? (
+                        <FaEye className="text-default-400 pointer-events-none text-xl" />
+                      ) : (
+                        <FaEyeSlash className="text-default-400 pointer-events-none text-xl" />
+                      )}
+                    </button>
+                  }
+                  label="Confirm Password"
+                  type={visiblePassword.confirmPassword ? "text" : "password"}
+                  variant="bordered"
+                  isInvalid={!!errors.confirmPassword?.message}
+                  errorMessage={errors.confirmPassword?.message}
+                />
+              )}
             />
             <Button type="submit" fullWidth color="primary">
-              Create Account
+              {isRegistering ? <Spinner color="white" size="sm" /> : "Register"}
             </Button>
           </form>
         </CardBody>

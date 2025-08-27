@@ -40,7 +40,7 @@ const useRegister = () => {
   };
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -50,29 +50,37 @@ const useRegister = () => {
   });
 
   const registerService = async (payload: IRegister) => {
-    try {
-      const response = await authServices.register(payload);
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        setError("root", { message: error.message });
-      } else {
-        setError("root", { message: "An unknown error occurred" });
-      }
-    }
+    const response = await authServices.register(payload);
+    return response.data;
   };
 
-  const { mutate } = useMutation({
+  const { mutate: registerUser, isPending: isRegistering } = useMutation({
     mutationFn: registerService,
     onSuccess: () => {
       router.push("/auth/register/success");
       reset();
     },
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        setError("root", { message: error.message });
+      } else {
+        setError("root", { message: "An unknown error occurred" });
+      }
+    },
   });
+
+  const handleRegister = async (data: IRegister) => {
+    await registerUser(data);
+  };
 
   return {
     visiblePassword,
     togglePasswordVisibility,
+    handleRegister,
+    control,
+    handleSubmit,
+    isRegistering,
+    errors,
   };
 };
 
