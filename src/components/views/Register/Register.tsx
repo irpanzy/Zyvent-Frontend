@@ -1,4 +1,5 @@
 import useRegister from "@/hooks/useRegister";
+import { cn } from "@/utils/cn";
 import { Button, Card, CardBody, Input, Spinner } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,9 +45,15 @@ const Register = () => {
               Login here
             </Link>
           </p>
+          {errors.root && (
+            <p className="font-sm text-danger-500">{errors?.root?.message}</p>
+          )}
           <form
             onSubmit={handleSubmit(handleRegister)}
-            className="flex w-80 flex-col gap-4 pt-4"
+            className={cn(
+              "flex w-80 flex-col pt-4",
+              Object.keys(errors).length > 0 ? "gap-2" : "gap-4",
+            )}
           >
             <Controller
               control={control}
