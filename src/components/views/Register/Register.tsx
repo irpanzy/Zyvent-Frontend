@@ -45,11 +45,6 @@ const Register = () => {
               Login here
             </Link>
           </p>
-          {errors.root && (
-            <p className="font-sm text-danger-500" role="alert">
-              {errors?.root?.message}
-            </p>
-          )}
           <form
             onSubmit={handleSubmit(handleRegister)}
             className={cn(

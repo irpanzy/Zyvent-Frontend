@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@heroui/react": "^2.8.2",
+    "@heroui/system": "^2.4.21",
+    "@heroui/theme": "^2.4.21",
+    "@heroui/toast": "^2.0.15",
     "@hookform/resolvers": "^5.2.1",
     "@tanstack/react-query": "^5.85.5",
     "axios": "^1.11.0",
