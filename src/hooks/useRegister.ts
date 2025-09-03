@@ -61,8 +61,38 @@ const useRegister = () => {
       reset();
     },
     onError: (error: unknown) => {
-      if (error instanceof Error) {
-        setError("root", { message: error.message });
+      // Cast error untuk mendapatkan backendError yang ditambahkan di interceptor
+      const axiosError = error as {
+        backendError?: {
+          message?: string;
+          errors?: Record<string, string | string[]>;
+          status?: number;
+        };
+        message?: string;
+      };
+      
+      // Periksa apakah ada backendError dari interceptor
+      if (axiosError.backendError) {
+        const { message, errors } = axiosError.backendError;
+        
+        // Jika ada pesan error umum, tampilkan
+        if (message) {
+          setError("root", { message });
+        }
+        
+        // Jika ada error spesifik per field
+        if (errors && typeof errors === 'object') {
+          Object.entries(errors).forEach(([field, message]) => {
+            // Konversi array message ke string (ambil yang pertama)
+            const errorMessage = Array.isArray(message) ? message[0] : message;
+            
+            // Set error untuk field yang sesuai
+            setError(field as keyof IRegister, { message: errorMessage as string });
+          });
+        }
+      } else if (error instanceof Error) {
+        // Fallback ke error message standar jika tidak ada response data
+        setError("root", { message: "Registration failed. Please try again." });
       } else {
         setError("root", { message: "An unknown error occurred" });
       }

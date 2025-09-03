@@ -5,7 +5,6 @@ import environment from "@/config/environment";
 
 const authServices = {
   register: (payload: IRegister) => {
-    console.log("Payload register:", payload);
     return instance.post(
       `${environment.API_URL}${endpoint.AUTH}/register`,
       payload,
