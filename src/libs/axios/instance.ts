@@ -1,4 +1,4 @@
-import environment from "@/config/environment";
+  import environment from "@/config/environment";
 import axios from "axios";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
@@ -35,6 +35,15 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Tambahkan informasi error ke objek error untuk penggunaan lebih mudah
+    if (error.response) {
+      error.backendError = {
+        message: error.response.data?.message || error.response.statusText,
+        errors: error.response.data?.errors || {},
+        status: error.response.status
+      };
+    }
+    
     return Promise.reject(error);
   }
 );

@@ -45,9 +45,6 @@ const Register = () => {
               Login here
             </Link>
           </p>
-          {errors.root && (
-            <p className="font-sm text-danger-500">{errors?.root?.message}</p>
-          )}
           <form
             onSubmit={handleSubmit(handleRegister)}
             className={cn(
@@ -63,6 +60,7 @@ const Register = () => {
                 <Input
                   {...field}
                   isClearable
+                  onClear={() => field.onChange("")}
                   type="text"
                   label="Full Name"
                   variant="bordered"
@@ -80,6 +78,7 @@ const Register = () => {
                 <Input
                   {...field}
                   isClearable
+                  onClear={() => field.onChange("")}
                   type="text"
                   label="Username"
                   variant="bordered"
@@ -97,6 +96,7 @@ const Register = () => {
                 <Input
                   {...field}
                   isClearable
+                  onClear={() => field.onChange("")}
                   type="tel"
                   label="Phone Number"
                   variant="bordered"
@@ -114,6 +114,7 @@ const Register = () => {
                 <Input
                   {...field}
                   isClearable
+                  onClear={() => field.onChange("")}
                   type="email"
                   label="Email"
                   variant="bordered"
@@ -183,7 +184,12 @@ const Register = () => {
                 />
               )}
             />
-            <Button type="submit" fullWidth color="primary">
+            <Button
+              type="submit"
+              fullWidth
+              color="primary"
+              disabled={isRegistering}
+            >
               {isRegistering ? <Spinner color="white" size="sm" /> : "Register"}
             </Button>
           </form>

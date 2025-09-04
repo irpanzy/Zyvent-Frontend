@@ -1,9 +1,10 @@
 import authServices from "@/services/auth";
 import { IRegister } from "@/types/Auth";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { addToast } from "@heroui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -59,12 +60,87 @@ const useRegister = () => {
     onSuccess: () => {
       router.push("/auth/register/success");
       reset();
+      
+      // Tambahkan toast sukses
+      addToast({
+        title: "Registration Success",
+        description: "Your account has been created successfully!",
+        color: "success"
+      });
     },
     onError: (error: unknown) => {
-      if (error instanceof Error) {
-        setError("root", { message: error.message });
+      // Cast error untuk mendapatkan backendError yang ditambahkan di interceptor
+      const axiosError = error as {
+        backendError?: {
+          message?: string;
+          errors?: Record<string, string | string[]>;
+          status?: number;
+        };
+        message?: string;
+      };
+      
+      // Periksa apakah ada backendError dari interceptor
+      if (axiosError.backendError) {
+        const { message, errors } = axiosError.backendError;
+        
+        // Jika ada pesan error umum, tampilkan sebagai toast dan set di form
+        if (message) {
+          setError("root", { message });
+          addToast({
+            title: "Registration Failed",
+            description: message,
+            color: "danger"
+          });
+        }
+        
+        // Jika ada error spesifik per field
+        if (errors && typeof errors === 'object') {
+          // Kumpulkan semua pesan error untuk toast
+          const errorMessages: string[] = [];
+          
+          Object.entries(errors).forEach(([field, message]) => {
+            // Konversi array message ke string (ambil yang pertama)
+            const errorMessage = Array.isArray(message) ? message[0] : message;
+            
+            // Set error untuk field yang sesuai
+            setError(field as keyof IRegister, { message: errorMessage as string });
+            
+            // Tambahkan ke kumpulan pesan error
+            errorMessages.push(`${field}: ${errorMessage}`);
+          });
+          
+          // Tampilkan semua error dalam satu toast
+          if (errorMessages.length > 0) {
+            addToast({
+              title: "Validation Errors",
+              description: React.createElement(
+                "ul", 
+                { className: "list-disc pl-4" },
+                errorMessages.map((msg, index) => 
+                  React.createElement("li", { key: index }, msg)
+                )
+              ),
+              color: "danger"
+            });
+          }
+        }
+      } else if (error instanceof Error) {
+        // Fallback ke error message standar jika tidak ada response data
+        const errorMessage = "Registration failed. Please try again.";
+        setError("root", { message: errorMessage });
+        addToast({
+          title: "Error",
+          description: errorMessage,
+          color: "danger"
+        });
       } else {
-        setError("root", { message: "An unknown error occurred" });
+        const errorMessage = "An unknown error occurred";
+        setError("root", { message: errorMessage });
+        addToast({
+          title: "Error",
+          description: errorMessage,
+          color: "danger"
+        });
       }
     },
   });

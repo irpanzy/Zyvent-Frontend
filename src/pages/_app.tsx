@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import { cn } from "@/utils/cn";
-import { HeroUIProvider } from "@heroui/react";
+import { Providers } from "@/utils/providers";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 import { Poppins } from "next/font/google";
@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <HeroUIProvider>
+      <Providers>
         <main
           className={cn(
             poppins.className,
@@ -31,7 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
         >
           <Component {...pageProps} />
         </main>
-      </HeroUIProvider>
+      </Providers>
     </QueryClientProvider>
   );
 }
