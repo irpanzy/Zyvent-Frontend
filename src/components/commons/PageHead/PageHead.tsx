@@ -13,6 +13,7 @@ const PageHead = (props: PageHeadProps) => {
       <title>{title}</title>
       <meta charSet="UTF-8" />
       <meta name="description" content={description} />
+      <link rel="icon" href="/general/logo.svg" type="image/x-icon" />
     </Head>
   );
 };
