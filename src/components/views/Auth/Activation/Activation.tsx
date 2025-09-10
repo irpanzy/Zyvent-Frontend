@@ -4,15 +4,28 @@ import { useEffect } from "react";
 import { addToast } from "@heroui/toast";
 import { useRouter } from "next/router";
 
-const RegisterSuccess = () => {
+interface ActivationProps {
+  status: "success" | "failed";
+}
+
+const Activation = (props: ActivationProps) => {
   const router = useRouter();
+  const { status } = props;
   useEffect(() => {
-    addToast({
-      title: "Registration Success",
-      description: "Your account has been created successfully!",
-      color: "success",
-    });
-  }, []);
+    if (status === "success") {
+      addToast({
+        title: "Activation Success",
+        description: "Your account has been activated successfully!",
+        color: "success",
+      });
+    } else {
+      addToast({
+        title: "Activation Failed",
+        description: "Sorry, the activation code is invalid or expired.",
+        color: "danger",
+      });
+    }
+  }, [status]);
 
   return (
     <div className="mx-auto flex w-full flex-col items-center justify-center gap-10 p-4">
@@ -25,21 +38,28 @@ const RegisterSuccess = () => {
           style={{ height: "auto" }}
         />
         <Image
-          src="/illustration/email-send.svg"
+          src={
+            status === "success"
+              ? "/illustration/success.svg"
+              : "/illustration/pending.svg"
+          }
           alt="Success"
-          width={300}
-          height={300}
+          width={280}
+          height={280}
           style={{ height: "auto" }}
           priority
         />
       </div>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-danger-500 text-3xl font-bold">
-          Create Account Success
+          {status === "success"
+            ? "Activation Account Success"
+            : "Activation Account Failed"}
         </h1>
         <p className="max-w-md px-4 text-center text-gray-600">
-          Check your email to verify your account and start using all the
-          features of Zyvent!
+          {status === "success"
+            ? "Your account is now active. You can login to Zyvent."
+            : "Sorry, confirmation code is invalid or expired."}
         </p>
         <Button
           onPress={() => router.push("/")}
@@ -54,4 +74,4 @@ const RegisterSuccess = () => {
   );
 };
 
-export default RegisterSuccess;
+export default Activation;

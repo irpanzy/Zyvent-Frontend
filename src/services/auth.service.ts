@@ -1,5 +1,5 @@
 import instance from "@/libs/axios/instance";
-import { IRegister } from "@/types/Auth";
+import { IActivationAccount, IRegister } from "@/types/Auth";
 import endpoint from "./endpoint.constant";
 import environment from "@/config/environment";
 
@@ -10,8 +10,12 @@ const authServices = {
       payload,
     );
   },
-  //   login: (payload: ILogin) =>
-  //     instance.post(`${environment.API_URL}${endpoint.AUTH}/login`, payload),
+  activation: (payload: IActivationAccount) => {
+    return instance.post(
+      `${environment.API_URL}${endpoint.AUTH}/activation`,
+      payload,
+    );
+  },
 };
 
 export default authServices;
