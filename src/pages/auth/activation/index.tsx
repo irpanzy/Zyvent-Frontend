@@ -17,7 +17,8 @@ const ActivationPage = (props: ActivationPageProps) => {
 export async function getServerSideProps(context: { query: { code: string } }) {
   try {
     const result = await authServices.activation({ code: context.query.code });
-    if (result.data.data) {
+    
+    if (result.status === 200 && result.data.message && result.data.user) {
       return {
         props: {
           status: "success",
@@ -30,8 +31,7 @@ export async function getServerSideProps(context: { query: { code: string } }) {
         },
       };
     }
-  } catch (error) {
-    console.error("Activation error:", error);
+  } catch {
     return {
       props: {
         status: "failed",
