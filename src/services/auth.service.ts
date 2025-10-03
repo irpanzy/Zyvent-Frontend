@@ -1,20 +1,24 @@
 import instance from "@/libs/axios/instance";
-import { IActivationAccount, IRegister } from "@/types/Auth";
+import { IActivationAccount, ILogin, IRegister } from "@/types/Auth";
 import endpoint from "./endpoint.constant";
-import environment from "@/config/environment";
 
 const authServices = {
   register: (payload: IRegister) => {
-    return instance.post(
-      `${environment.API_URL}${endpoint.AUTH}/register`,
-      payload,
-    );
+    return instance.post(`${endpoint.AUTH}/register`, payload);
   },
   activation: (payload: IActivationAccount) => {
-    return instance.post(
-      `${environment.API_URL}${endpoint.AUTH}/activation`,
-      payload,
-    );
+    return instance.post(`${endpoint.AUTH}/activation`, payload);
+  },
+
+  login: (payload: ILogin) => {
+    return instance.post(`${endpoint.AUTH}/login`, payload);
+  },
+  getMeProfile: (token: string) => {
+    return instance.get(`${endpoint.AUTH}/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   },
 };
 
